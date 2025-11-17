@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 import { COLORS } from '../constants/colors';
+import MealPlanScreen from './MealPlanScreen';
 
 const { width } = Dimensions.get('window');
 
@@ -67,7 +68,7 @@ const FOOD_CATEGORIES = [
   { id: 'beverages', icon: 'cup', color: '#4ECDC4', name: 'Beverages' },
 ];
 
-export default function FoodScreen() {
+export default function FoodScreen({ navigation }: any) {
   const { addFood, getTodayData } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categoryDropdownVisible, setCategoryDropdownVisible] = useState(false);
@@ -75,6 +76,7 @@ export default function FoodScreen() {
   const [quantity, setQuantity] = useState('');
   const [proteinPerServing, setProteinPerServing] = useState('');
   const [isAutoEstimated, setIsAutoEstimated] = useState(false);
+  const [mealPlanVisible, setMealPlanVisible] = useState(false);
 
   const todayData = getTodayData();
   const proteinPercentage = (todayData.totalProtein / todayData.proteinGoal) * 100;
@@ -134,7 +136,7 @@ export default function FoodScreen() {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header Card */}
         <LinearGradient
-          colors={[COLORS.gradient1, COLORS.gradient2]}
+          colors={['#66BB6A', '#4CAF50']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.headerCard}
@@ -143,6 +145,23 @@ export default function FoodScreen() {
           <Text style={styles.headerTitle}>Log Food</Text>
           <Text style={styles.headerSubtitle}>Track your nutrition & protein intake</Text>
         </LinearGradient>
+
+        {/* Meal Plan Button */}
+        <TouchableOpacity
+          style={styles.mealPlanButton}
+          onPress={() => setMealPlanVisible(true)}
+        >
+          <LinearGradient
+            colors={['#4CAF50', '#66BB6A']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.mealPlanGradient}
+          >
+            <MaterialCommunityIcons name="food-fork-drink" size={24} color={COLORS.white} />
+            <Text style={styles.mealPlanButtonText}>View Meal Plan</Text>
+            <Ionicons name="chevron-forward" size={24} color={COLORS.white} />
+          </LinearGradient>
+        </TouchableOpacity>
 
         {/* Protein Progress */}
         <View style={styles.progressSection}>
@@ -162,7 +181,7 @@ export default function FoodScreen() {
                 styles.progressBar,
                 {
                   width: `${Math.min(proteinPercentage, 100)}%`,
-                  backgroundColor: proteinPercentage >= 100 ? COLORS.success : COLORS.primary,
+                  backgroundColor: proteinPercentage >= 100 ? COLORS.success : '#4CAF50',
                 },
               ]}
             />
@@ -219,7 +238,7 @@ export default function FoodScreen() {
 
         {/* Category Dropdown Modal */}
         <Modal
-          visible={categoryDropdownVisible}
+          visible={Boolean(categoryDropdownVisible)}
           transparent={true}
           animationType="fade"
           onRequestClose={() => setCategoryDropdownVisible(false)}
@@ -263,7 +282,7 @@ export default function FoodScreen() {
                     </View>
                     <Text style={styles.dropdownItemText}>{category.name}</Text>
                     {selectedCategory === category.name && (
-                      <Ionicons name="checkmark-circle" size={24} color={COLORS.primary} />
+                      <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
                     )}
                   </TouchableOpacity>
                 ))}
@@ -343,7 +362,7 @@ export default function FoodScreen() {
         {/* Add Button */}
         <TouchableOpacity style={styles.addButton} onPress={handleAddFood}>
           <LinearGradient
-            colors={[COLORS.gradient1, COLORS.gradient2]}
+            colors={['#4CAF50', '#66BB6A']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.addGradient}
@@ -365,7 +384,7 @@ export default function FoodScreen() {
                     <MaterialCommunityIcons
                       name="food-variant"
                       size={24}
-                      color={COLORS.primary}
+                      color="#4CAF50"
                     />
                   </View>
                   <View style={styles.foodInfo}>
@@ -384,6 +403,11 @@ export default function FoodScreen() {
           </View>
         )}
       </ScrollView>
+
+      <MealPlanScreen
+        visible={mealPlanVisible}
+        onClose={() => setMealPlanVisible(false)}
+      />
     </View>
   );
 }
@@ -441,7 +465,7 @@ const styles = StyleSheet.create({
   progressPercent: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: '#4CAF50',
   },
   progressInfo: {
     flexDirection: 'row',
@@ -451,7 +475,7 @@ const styles = StyleSheet.create({
   progressValue: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: '#4CAF50',
   },
   progressGoal: {
     fontSize: 18,
@@ -571,7 +595,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.border,
   },
   dropdownItemSelected: {
-    backgroundColor: COLORS.primary + '10',
+    backgroundColor: '#4CAF50' + '10',
   },
   dropdownItemIcon: {
     width: 48,
@@ -700,7 +724,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: COLORS.primary + '20',
+    backgroundColor: '#4CAF50' + '20',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -724,10 +748,34 @@ const styles = StyleSheet.create({
   foodProteinValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: '#4CAF50',
   },
   foodProteinLabel: {
     fontSize: 11,
     color: COLORS.textGray,
+  },
+  mealPlanButton: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  mealPlanGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  mealPlanButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
   },
 });

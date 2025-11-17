@@ -1,5 +1,6 @@
 export const COLORS = {
   primary: '#EF4444',
+  secondary: '#F87171',
   primaryLight: '#F87171',
   primaryDark: '#DC2626',
   gradient1: '#EF4444',
@@ -15,7 +16,7 @@ export const COLORS = {
   success: '#7ED957',
   successLight: '#A8E68A',
   warning: '#FFA726',
-  error: '#F44336',
+  error: '#400e02',
   shadow: 'rgba(0, 0, 0, 0.08)',
   shadowDark: 'rgba(0, 0, 0, 0.15)',
   accent: '#5C6BC0',
