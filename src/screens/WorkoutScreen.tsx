@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 import { COLORS } from '../constants/colors';
+import WorkoutPlanScreen from './WorkoutPlanScreen';
 
 const { width } = Dimensions.get('window');
 
@@ -28,13 +29,14 @@ const WORKOUT_TYPES = [
   { id: 'other', name: 'Other', icon: 'fitness', color: '#FF9D6B' },
 ];
 
-export default function WorkoutScreen() {
+export default function WorkoutScreen({ navigation }: any) {
   const { addWorkout, getTodayData } = useApp();
   const [workoutName, setWorkoutName] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [activeCalories, setActiveCalories] = useState('');
   const [totalCalories, setTotalCalories] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [workoutPlanVisible, setWorkoutPlanVisible] = useState(false);
 
   const todayData = getTodayData();
 
@@ -86,6 +88,23 @@ export default function WorkoutScreen() {
           <Text style={styles.headerTitle}>Log Workout</Text>
           <Text style={styles.headerSubtitle}>Track your exercise & burn calories</Text>
         </LinearGradient>
+
+        {/* Workout Plan Button */}
+        <TouchableOpacity
+          style={styles.workoutPlanButton}
+          onPress={() => setWorkoutPlanVisible(true)}
+        >
+          <LinearGradient
+            colors={['#A06BFF', '#8B5CF6']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.workoutPlanGradient}
+          >
+            <MaterialCommunityIcons name="calendar-month" size={24} color={COLORS.white} />
+            <Text style={styles.workoutPlanButtonText}>View Workout Plan</Text>
+            <Ionicons name="chevron-forward" size={24} color={COLORS.white} />
+          </LinearGradient>
+        </TouchableOpacity>
 
         {/* Workout Type Selection */}
         <View style={styles.section}>
@@ -351,6 +370,11 @@ export default function WorkoutScreen() {
           </View>
         )}
       </ScrollView>
+
+      <WorkoutPlanScreen
+        visible={workoutPlanVisible}
+        onClose={() => setWorkoutPlanVisible(false)}
+      />
     </View>
   );
 }
@@ -669,5 +693,29 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.textGray,
     marginLeft: 4,
+  },
+  workoutPlanButton: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  workoutPlanGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  workoutPlanButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
   },
 });
